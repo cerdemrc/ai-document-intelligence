@@ -26,6 +26,7 @@ pymupdf==2.1
 pymupdf4llm==2.1
 pymupdf_layout==2.1
 pytest==9.2.0
+pytest-asyncio==1.5.0
 python-dotenv==1.2.4
 python-multipart==0.0.34
 PyYAML==6.0.3

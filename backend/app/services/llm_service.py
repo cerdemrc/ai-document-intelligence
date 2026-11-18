@@ -21,6 +21,10 @@ async def analyze_document(document_text: str) -> DocumentAnalysis:
     - Do not invent missing information.
     - Use null when responsible person or deadline is not specified.
     - Return empty arrays when no relevant items are found.
+    -If no action items exist, return an empty array: [].
+    - Never create an ActionItem with null, "null", or empty task.
+    - Only include an action item when the document explicitly describes an action that needs to be performed.
+    - Do not interpret general discussion topics as action items.
 
     Document:
     {document_text}
