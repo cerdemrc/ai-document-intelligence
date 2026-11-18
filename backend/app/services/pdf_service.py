@@ -1,6 +1,6 @@
 import pymupdf
 
-def extract_text_from_pdf(file_bytes: bytes) -> str:
+def extract_text_from_pdf(file_bytes: bytes) -> list[dict]:
     if b"%PDF-" not in file_bytes[:1024]:
         raise ValueError("Invalid PDF file.")
 
@@ -12,13 +12,17 @@ def extract_text_from_pdf(file_bytes: bytes) -> str:
     except pymupdf.FileDataError:
         raise ValueError("The PDF file is corrupted or invalid.")
 
-    extracted_text = []
+    extracted_pages = []
 
     try:
-        for page in document:
+        for page_number, page in enumerate(document.pages(), start=1):
             page_text = page.get_text()
-            extracted_text.append(page_text)
+
+            extracted_pages.append({
+                "page_number": page_number,
+                "text": page_text
+            })
     finally:
         document.close()
 
-    return "\n".join(extracted_text)
+    return extracted_pages

@@ -28,7 +28,11 @@ async def analyze_document(file: UploadFile = File(...)):
         )
 
     try:
-        extracted_text = extract_text_from_pdf(file_bytes)
+        extracted_pages = extract_text_from_pdf(file_bytes)
+
+        extracted_text = "\n".join(
+            page["text"] for page in extracted_pages
+        )
     except ValueError as error:
         raise HTTPException(
             status_code=400,
@@ -43,5 +47,6 @@ async def analyze_document(file: UploadFile = File(...)):
 
     return {
         "filename": file.filename,
-        "text": extracted_text
+        "text": extracted_text,
+        "pages": extracted_pages
     }

@@ -33,8 +33,11 @@ def test_upload_valid_pdf(client, sample_pdf):
     )
 
     assert response.status_code == 200
-    assert "This is a sample PDF document." in response.json()["text"]
-
+    assert response.json()["pages"][0]["page_number"] == 1
+    assert (
+        "This is a sample PDF document."
+        in response.json()["pages"][0]["text"]
+    )
 
 def test_reject_non_pdf_file(client):
     response = client.post(
