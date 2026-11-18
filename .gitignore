@@ -21,3 +21,6 @@ yarn-debug.log*
 # IDE
 .idea/
 .DS_Store
+
+# IDE
+.vscode/
