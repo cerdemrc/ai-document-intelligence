@@ -1,9 +1,14 @@
+
+import httpx
+
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.pdf_service import extract_text_from_pdf
+from app.services.llm_service import analyze_document as run_document_analysis
 
 router = APIRouter()
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
 
 @router.post("/analyze")
 async def analyze_document(file: UploadFile = File(...)):
@@ -45,8 +50,17 @@ async def analyze_document(file: UploadFile = File(...)):
             detail="No extractable text found in the PDF."
         )
 
+    try:
+        analysis = await run_document_analysis(extracted_text)
+    except httpx.HTTPError:
+        raise HTTPException(
+            status_code=503,
+            detail="The AI analysis service is currently unavailable."
+        )
+
     return {
         "filename": file.filename,
         "text": extracted_text,
-        "pages": extracted_pages
+        "pages": extracted_pages,
+        "analysis": analysis.model_dump()
     }
